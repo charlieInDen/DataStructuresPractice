@@ -1,5 +1,146 @@
 import UIKit
 
+/* Given a sorted array nums, remove the duplicates in-place such that each element appear only once and return the new length.
+
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+*/
+func removeDuplicates(_ nums: inout [Int]) -> Int {
+    if nums.count == 0 || nums.count == 1 {
+        return nums.count
+    }
+    var stPoint: Int = 0
+    var curPoint: Int = 1
+    while curPoint < nums.count {
+        if nums[curPoint] != nums[stPoint] {
+            stPoint = stPoint + 1
+            nums.swapAt(stPoint, curPoint)
+        }
+        curPoint = curPoint + 1
+    }
+    return stPoint + 1
+}
+
+//Given nums = [0,0,1,1,1,2,2,3,3,4],
+//
+//Your function should return length = 5, with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively.
+//It doesn't matter what values are set beyond the returned length.
+
+
+
+
+/* Say you have an array for which the ith element is the price of a given stock on day i.
+ 
+ Design an algorithm to find the maximum profit. You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times).
+ 
+ Note: You may not engage in multiple transactions at the same time (i.e., you must sell the stock before you buy again).
+ */
+func maxProfit(_ prices: [Int]) -> Int {
+    var result = 0
+    var i = 0
+    var buy = 0
+    var sell = 0
+    while i < prices.count {
+        while (i < prices.count - 1) && (prices[i+1] < prices[i]) {
+            i = i + 1
+        }
+        if i == prices.count - 1 {
+            break
+        }
+        buy = prices[i]
+        i = i + 1
+        while (i < prices.count) && (prices[i - 1] < prices[i]) {
+            i = i + 1
+        }
+        sell = prices[i-1]
+        
+        result = result + sell - buy
+        print(result)
+    }
+    return result
+}
+//Input: [7,1,5,3,6,4]
+//Output: 7
+//Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+//Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+
+
+
+
+//Given an array, rotate the array to the right by k steps, where k is non-negative.
+
+func gcd(_ a:Int,_ b:Int) -> Int {
+    if b == 0 {
+        return a
+    }
+    return gcd(b, a%b)
+}
+func rotate(_ nums: inout [Int], _ diff: Int) {
+    var d = diff
+    if nums.count == 0 || nums.count == 1 {
+        return
+    }
+    while d > nums.count {
+        d = d - nums.count
+    }
+    let k = nums.count - d
+    let nSet = gcd(nums.count, k)
+
+    for i in 0..<nSet {
+        let t = nums[i]
+        var j = i
+        
+        while true {
+            var x = j + k
+            if x >= nums.count {
+                x = x - nums.count
+            }
+            if x == i {
+                break
+            }
+            nums[j] = nums[x]
+            j = x
+        }
+        nums[j] = t
+    }
+}
+//Input: [1,2,3,4,5,6,7] and k = 3
+//Output: [5,6,7,1,2,3,4]
+var input = [1,2,3,4,5,6,7]
+rotate(&input, 3)
+
+
+//Given an array of integers, find if the array contains any duplicates.
+//
+//Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
+
+func containsDuplicate(_ nums: [Int]) -> Bool {
+    if nums.count == 0 || nums.count == 1 {
+        return false
+    }
+    let result = Set(nums)
+    if result.count != nums.count {
+        return true
+    }
+    return false
+}
+//Input: [1,1,1,3,3,4,3,2,4,2]
+//Output: true
+
+
+//Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+//Note:Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+func singleNumber(_ nums: [Int]) -> Int {
+    
+    var result = nums[0]
+    for i in 1..<nums.count {
+        result = result ^ nums[i]
+    }
+    return result
+}
+
+//Input: [4,1,2,1,2]
+//Output: 4
 
 
 //Check whether any pair exists whose sum is X
