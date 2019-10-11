@@ -281,3 +281,17 @@ struct Limit<V: Comparable> {
     }
   }
 }
+
+@propertyWrapper
+struct SpaceRemover {
+    private(set) var value: String = ""
+
+    var wrappedValue: String {
+        get { value }
+        set { value = newValue.trimmingCharacters(in: .whitespacesAndNewlines) }
+    }
+
+    init(initialValue: String) {
+        self.wrappedValue = initialValue
+    }
+}
