@@ -1,4 +1,38 @@
 import UIKit
+// Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
+// You may assume that the array is non-empty and the majority element always exist in the array.
+class Solution {
+    func majorityElement(_ nums: [Int]) -> Int {
+        var majIndex = 0
+        var count = 1
+        //Find possible majority element loops through each element and maintains a count of nums[majIndex]. If the next element is same then increment the count, if the next element is not same then decrement the count, and if the count reaches 0 then changes the majIndex to the current element and set the count again to 1. So, the first phase of the algorithm gives us a major candidate element.
+        for i in 1..<nums.count {
+            if nums[majIndex] == nums[i] {
+                count = count + 1
+            }else {
+                count = count - 1
+            }
+            if count == 0 {
+                majIndex = i
+                count = 1
+            }
+        }
+        var result = 0
+        //Validate whether it has majority or not
+        for i in 0..<nums.count {
+            if nums[i] == nums[majIndex] {
+                result = result + 1
+            }
+        }
+        if result > nums.count/2 {
+            return nums[majIndex]
+        }else {
+            return -1
+        }
+        
+    }
+}
+
 
 // Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
 class Solution {
