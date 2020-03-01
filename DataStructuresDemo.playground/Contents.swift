@@ -1,5 +1,61 @@
 import UIKit
 
+// Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+class Solution {
+    func setZeroes(_ matrix: inout [[Int]]) {
+        if matrix.count == 0 {
+            return
+        }
+        //Define two flags for initial row and column to store whether initially row or column contain any zero or not
+        var hasZeroInRow = false
+        var hasZeroInCol = false
+        let rowCount = matrix.count
+        let colCount = matrix[0].count
+        let rowArr = matrix[0]
+        for item in rowArr {
+            if item == 0 {
+                hasZeroInRow = true
+                break
+            }
+        }
+        for i in 0..<rowCount {
+             if matrix[i][0] == 0 {
+                 hasZeroInCol = true
+                 break
+             }
+        }
+        //Check for other zero in remaining rows and column
+        for (i,row) in matrix.enumerated() {
+            for (j,_) in row.enumerated() {
+                if i != 0 && j != 0 && matrix[i][j] == 0 {
+                    matrix[i][0] = 0
+                    matrix[0][j] = 0
+                }
+            }
+        }
+        //Time to make row and col zero
+        for (i,row) in matrix.enumerated() {
+            for (j,_) in row.enumerated() {
+                if i != 0 && j != 0 && (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+        //Make row and col zero if hasZero flags are enabled
+        for i in 0..<rowCount {
+            if hasZeroInCol == true {
+                matrix[i][0] = 0
+            }
+        }
+        
+        for i in 0..<colCount {
+            if hasZeroInRow == true {
+                matrix[0][i] = 0
+            }
+        }
+    }
+}
+
 /* Given a sorted array nums, remove the duplicates in-place such that each element appear only once and return the new length.
 
 Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
