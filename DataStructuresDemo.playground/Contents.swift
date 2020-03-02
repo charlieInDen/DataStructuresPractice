@@ -2,6 +2,28 @@ import UIKit
 // Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
 // You may assume that the array is non-empty and the majority element always exist in the array.
 class Solution {
+// Given sorted array of numbers and a sum. we have to find any two numbers whose sum is equal to the given sum.
+// Time Complexity: O(n)
+    func findClosestPairInSortedArray(nums: [Int],forValue val:Int) -> (Int, Int) {
+        var left = 0
+        var right = nums.count - 1
+        var result = (-1, -1)
+        var minDiffBetweenPairs = Int.max
+        while left < right {
+            if abs(nums[left] + nums[right] - val) < minDiffBetweenPairs {
+                minDiffBetweenPairs = abs(nums[left] + nums[right] - val)
+                result = (left, right)
+            }
+            if (nums[left] + nums[right]) < val {
+                left = left + 1
+            } else {
+                right = right - 1
+            }
+        }
+        print(result)
+        return result
+    }
+
     func majorityElement(_ nums: [Int]) -> Int {
         var majIndex = 0
         var count = 1
