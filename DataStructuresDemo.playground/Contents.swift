@@ -1,4 +1,43 @@
 import UIKit
+//An empty digit sequence is considered to have one decoding. It may be assumed that the input contains valid digits from 0 to 9 and there are no leading 0’s, no extra trailing 0’s and no two or more consecutive 0’s.
+func countPossibleDecode(string: String) -> Int {
+    //Convert to int array
+    let intArray = string.map({ Int(String($0)) ?? 0 })
+    var n2Count = 1
+    var n1Count = 1
+    var n2 = 0
+    var n1 = 0
+    //Traverse int array
+    for (index, charNum) in intArray.enumerated() {
+        var result = 0
+        switch index {
+        case 0:
+            n1 = charNum
+        case 1:
+            n2 = charNum
+        default:
+            //Update two digits
+            n1 = n2
+            n2 = charNum
+        }
+        //Checking for single digit
+        if n2 > 0 {
+            result = n2Count
+        }
+        //Checking for 26 or more
+        if (n1 == 1 || n1 == 2) && n2 < 7 {
+            result = result + n1Count
+            n1Count = n2Count
+            n2Count = result
+        }
+    }
+    return n2Count
+}
+//121 - "ABA", "AU", "LA"
+//1234 - "ABCD", "LCD", "AWD"
+countPossibleDecode(string: "121")
+countPossibleDecode(string: "1234")
+
 
 // Implement Trie
 //T type should conform to hashable so that it can be used as key in a dictionary
