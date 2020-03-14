@@ -1,4 +1,142 @@
 import UIKit
+
+// Implement Trie
+//T type should conform to hashable so that it can be used as key in a dictionary
+class TrieNode<T: Hashable> {
+    var child: [T: TrieNode] = [:]
+    var leafNode: Bool = false
+    init() {
+    }
+}
+
+class Trie {
+    let root: TrieNode<Character>
+    init() {
+        root = TrieNode()
+    }
+    
+    /// Insert words in a Trie
+    /// - Parameter word: Made of letters
+    func insert(word: String) {
+        guard !word.isEmpty else {
+            return
+        }
+        var currentNode = root
+        //Read each character and store in currentNode following its depth
+        for (index, letter) in word.enumerated() {
+            if let childNode = currentNode.child[letter] {
+                currentNode = childNode
+            } else {
+                let node = TrieNode<Character>()
+                currentNode.child[letter] = node
+                //Update current node to connect the letters
+                currentNode = node
+            }
+            if index == word.count - 1 {
+                currentNode.leafNode = true
+            }
+        }
+    }
+    /// Search string in a Trie data structure
+    /// - Parameter word: Searchable string
+    func search(word: String) -> Bool {
+        // Empty string returns false
+        guard !word.isEmpty else {
+            return false
+        }
+        // Fetch root node
+        var currentNode = root
+        //Read each character of searchable string and check whether corresponding child exists or not
+        for (index, letter) in word.enumerated() {
+            guard let node = currentNode.child[letter] else {
+                return false
+            }
+            currentNode = node
+            if currentNode.leafNode && index == word.count - 1 {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+let trie = Trie()
+trie.insert(word: "seed")
+trie.insert(word: "weed")
+trie.insert(word: "need")
+trie.insert(word: "ate")
+trie.insert(word: "tend")
+trie.insert(word: "rent")
+trie.search(word: "rent")
+trie.search(word: "aten")
+trie.search(word: "need")
+//Boggle matrix size
+let m = 3
+let n = 3
+let boogle: [[Character]] = [["r","w","e"], ["t","e","d"], ["s","a","n"]]
+//Possible directions to visit
+let eightDirections = [(1,0),(0,1),(-1,0),(0,-1),(-1,1),(1,1),(1,-1),(-1,-1)]
+var findWords: [String] = []
+
+
+/// To check the next move is safe or not
+/// - Parameters:
+///   - i: row
+///   - j: column
+///   - visited: visited information for row & column
+func isSafe(i: Int, j: Int, visited: [[Bool]]) -> Bool {
+    return (i >= 0 && j >= 0 && i < m && j < n && !visited[i][j])
+}
+
+/// Search possible words from boggle array
+/// - Parameters:
+///   - root: Trie root node
+///   - boggle: 2D Matrix filled with characters
+///   - i: row
+///   - j: column
+///   - visited: visited information for row & column
+///   - string: possible string
+func searchWord(root: TrieNode<Character>, boggle: [[Character]], i: Int, j: Int, visited: inout [[Bool]], string: String) {
+    if root.leafNode && findWords.contains(string) == false {
+            findWords.append(string)
+    }
+    // DFS Implementation
+    if isSafe(i: i, j: j, visited: visited) {
+        visited[i][j] = true
+        for direction in eightDirections {
+            let newRow = i + direction.0
+            let newCol = j + direction.1
+            if isSafe(i: newRow, j: newCol, visited: visited) && (root.child[boggle[newRow][newCol]] != nil) {
+                let result = string + [boggle[newRow][newCol]]
+                searchWord(root: root.child[boggle[newRow][newCol]]!, boggle: boggle, i: newRow, j: newCol, visited: &visited, string: result)
+            }
+        }
+        visited[i][j] = false
+    }
+}
+/// finding possible words through boggling around boggle matrix
+/// - Parameters:
+///   - boggle: 2D Matrix
+///   - root: Trie root node
+func findPossibleWordsInBoogle(_ boggle:[[Character]], root: TrieNode<Character>) {
+    var visited = [[false, false, false], [false, false, false], [false, false, false]]
+    var result = ""
+    for x in 0..<m {
+        for y in 0..<n {
+            if root.child[boggle[x][y]] != nil {
+                result = result + [boggle[x][y]]
+                searchWord(root: root.child[boggle[x][y]]!, boggle: boggle, i: x, j: y, visited: &visited, string: result)
+                result = ""
+            }
+        }
+    }
+}
+
+findPossibleWordsInBoogle(boogle, root: trie.root)
+print(findWords)
+
+
+
 // Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
 // You may assume that the array is non-empty and the majority element always exist in the array.
 class Solution {
