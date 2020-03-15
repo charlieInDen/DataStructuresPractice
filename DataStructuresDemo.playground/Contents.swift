@@ -1,4 +1,121 @@
 import UIKit
+//Doubly linklist & LRU Cache
+class List<Key: Hashable> {
+    class ListNode<Key: Hashable> {
+        let key: Key
+        var value: Any
+        var next: ListNode<Key>?
+        weak var previous: ListNode<Key>?
+        init(key: Key, value: Any) {
+            self.key = key
+            self.value = value
+        }
+    }
+    
+    public let maxSize: Int
+    public var size: Int = 0
+    private var head: ListNode<Key>?
+    private var tail: ListNode<Key>?
+    
+    init(size: Int) {
+        self.maxSize = size
+    }
+    public func remove(_ node: ListNode<Key>) {
+        if size <= 0 {
+            return
+        }
+        let previousNode = node.previous
+        let nextNode = node.next
+        if let previous = previousNode {
+            previous.next = nextNode
+        }else {
+            head = nextNode
+        }
+        if let next = nextNode {
+            next.previous = previousNode
+        }
+        node.next = nil
+        node.previous = nil
+    }
+    public func insert(_ node:  ListNode<Key>) {
+        size = size + 1
+        if let currentNode = head {
+            node.next = currentNode
+            currentNode.previous = node
+        }else {
+            head = node
+            tail = node
+        }
+    }
+    public func dropLast() -> Key {
+        guard let previous = tail?.previous else {
+            let key = tail!.key
+            tail = nil
+            return key
+        }
+        tail = previous
+        previous.next = nil
+        return previous.key
+    }
+    
+}
+//LRU Cache
+class LRUCache<Key: Hashable> {
+    private let list: List<Key>
+    private var hashMap: [Key: List<Key>.ListNode<Key>] = [:]
+    init( size: Int) {
+        self.list = List<Key>(size: size)
+    }
+    public func set(value: Any, for key:Key) {
+        if let node = hashMap[key] {
+            remove(key)
+            node.value = value
+            insert(node,  for: key)
+        } else {
+            let node = List<Key>.ListNode<Key>(key: key, value: value)
+            insert(node,  for: key)
+        }
+    }
+    public func get(_ key: Key) -> Any? {
+        guard let node = hashMap[key] else {
+            return nil
+        }
+        remove(key)
+        insert(node, for: key)
+        return node.value
+    }
+    private func remove(_ key: Key) {
+        guard let node = hashMap[key] else {
+            return
+        }
+        // remove from doubly link list
+        list.remove(node)
+        // remove from hashmap
+        hashMap.removeValue(forKey: key)
+    }
+    private func insert(_ node: List<Key>.ListNode<Key>, for key: Key) {
+        if list.size == list.maxSize {
+            let droppedKey =  list.dropLast()
+            hashMap.removeValue(forKey: droppedKey)
+        }
+        list.insert(node)
+        hashMap[key] = node
+    }
+}
+
+let cache = LRUCache<String>(size: 3)
+cache.set(value: "Time", for: "Money")
+cache.set(value: "Time1", for: "Money1")
+cache.set(value: "Time2", for: "Money2")
+cache.set(value: "Time2", for: "Money2")
+cache.get("Money")
+cache.get("Money1")
+cache.set(value: "Time1", for: "Money1")
+cache.set(value: "Time1", for: "Money1")
+cache.set(value: "Time1", for: "Money1")
+cache.get("Money2")
+cache.get("Money1")
+
 //An empty digit sequence is considered to have one decoding. It may be assumed that the input contains valid digits from 0 to 9 and there are no leading 0’s, no extra trailing 0’s and no two or more consecutive 0’s.
 func countPossibleDecode(string: String) -> Int {
     //Convert to int array
