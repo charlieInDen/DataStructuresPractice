@@ -1,4 +1,23 @@
 import UIKit
+//Find minimum index such that a[i] = i
+//var a = [-1, 0, 1, 2, 4, 10]
+var a = [0, 2,3,4,5]
+func search(_ a: [Int], start: Int, end: Int) -> Int {
+    if start < end {
+        let mid = start + (end - start)/2
+        if a[mid] == mid {
+            return mid
+        }
+        if a[mid] > mid {
+            return search(a, start: start, end: mid - 1)
+        }
+        return search(a, start: mid + 1, end: end)
+    }
+    return -1
+}
+print(search(a, start: 0, end: 5))
+
+
 //Max Path Sum
 public class TreeNode {
     public var val: Int
