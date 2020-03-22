@@ -1,4 +1,44 @@
 import UIKit
+//Max Path Sum
+public class TreeNode {
+    public var val: Int
+    public var left: TreeNode?
+    public var right: TreeNode?
+    public init(_ val: Int) {
+        self.val = val
+        self.left = nil
+        self.right = nil
+    }
+}
+func calculateSum(_ root: TreeNode?,result: inout Int) -> Int {
+    guard let currentNode = root else {
+        return 0
+    }
+    let left = max(0,calculateSum(currentNode.left, result: &result))
+    let right = max(0,calculateSum(currentNode.right, result: &result))
+    result = max(result, left + right + currentNode.val)
+    print(result)
+    print(left,right, currentNode.val + max(left, right))
+    return currentNode.val + max(left, right)
+}
+
+func maxPathSum(_ root: TreeNode?) -> Int {
+    var ans = Int.min
+    calculateSum(root,result: &ans)
+    return ans
+}
+var root: TreeNode? = TreeNode(1)
+root?.left = TreeNode(2)
+root?.right = nil
+root?.left?.left = TreeNode(3)
+root?.left?.right = nil
+root?.left?.left?.left = TreeNode(4)
+root?.left?.right?.right = nil
+root?.left?.left?.left?.left = TreeNode(5)
+root?.left?.right?.right?.right = nil
+print(maxPathSum(root))
+
+
 //Doubly linklist & LRU Cache
 class List<Key: Hashable> {
     class ListNode<Key: Hashable> {
