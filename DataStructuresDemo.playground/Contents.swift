@@ -1,4 +1,26 @@
 import UIKit
+//Max sum continuous subarray
+//1 <= N <= 1e6
+//-1000 <= A[i] <= 1000
+//let A = [1, 2, 3, 4, -10]
+let A = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+func maximum(a: Int, b: Int) -> Int {
+    return a > b ? a : b
+}
+func maxSubArray(_ a: [Int]) -> Int {
+    var sum = 0
+    var maxSum = -1000001
+    for i in 0..<a.count {
+        sum = maximum(a: a[i], b: a[i] + sum)
+        if maxSum < sum {
+            maxSum = sum
+        }
+    }
+    return maxSum
+}
+print(maxSubArray(A))
+
+//Reverse matrix
 
    func transpose(_ matrix: inout [[Int]]) {
     let row = matrix.count
