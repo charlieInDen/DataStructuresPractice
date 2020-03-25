@@ -1,4 +1,19 @@
 import UIKit
+
+//Rearrange a given array so that Arr[i] becomes Arr[Arr[i]] with O(1) extra space.
+var a = [2,0,1]
+
+func arrange(_ a: inout [Int]) {
+    let n = a.count
+    for i in 0..<n {
+        a[i] = a[i] + (a[a[i]]%n)*n
+    }
+    for i in 0..<n {
+        a[i] = a[i]/n
+    }
+}
+arrange(&a)
+
 //Max sum continuous subarray
 //1 <= N <= 1e6
 //-1000 <= A[i] <= 1000
