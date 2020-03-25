@@ -1,4 +1,65 @@
 import UIKit
+
+   func transpose(_ matrix: inout [[Int]]) {
+    let row = matrix.count
+    guard row > 0 else {
+        return
+    }
+    let col = matrix[0].count
+    
+    //Convert row to col
+    for i in 0..<row {
+        for j in i..<col {
+            if i != j {
+                let temp = matrix[i][j]
+                matrix[i][j] = matrix[j][i]
+                matrix[j][i] = temp
+            }
+        }
+    }
+}
+
+func reverseRow(_ matrix: inout [[Int]]) {
+    let row = matrix.count
+    guard row > 0 else {
+        return
+    }
+    let col = matrix[0].count
+    for i in 0..<row {
+        var left = 0
+        var right = col - 1
+        while left < right {
+            let temp = matrix[i][left]
+            matrix[i][left] = matrix[i][right]
+            matrix[i][right] = temp
+            left = left + 1
+            right = right - 1
+        }
+    }
+}
+func printMatrix(_ matrix: [[Int]]) {
+    let row = matrix.count
+    guard row > 0 else {
+        return
+    }
+    for i in 0..<row {
+            print(matrix[i])
+    }
+}
+
+func rotate(_ matrix: inout [[Int]]) {
+    transpose(&matrix)
+    reverseRow(&matrix)
+     printMatrix(matrix)
+}
+var matrix =
+    [
+        [ 5, 1, 9,11],
+        [ 2, 4, 8,10],
+        [13, 3, 6, 7],
+        [15,14,12,16]
+]
+rotate(&matrix)
 //Find minimum index such that a[i] = i
 //var a = [-1, 0, 1, 2, 4, 10]
 var a = [0, 2,3,4,5]
