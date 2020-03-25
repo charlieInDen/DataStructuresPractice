@@ -1,4 +1,67 @@
 import UIKit
+//A message containing letters from A-Z is being encoded to numbers using the following mapping:
+//'A' -> 1
+//'B' -> 2
+//...
+//'Z' -> 26
+//Given an encoded message containing digits, determine the total number of ways to decode it.
+let map: [Character: Int] = [
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9
+]
+var n: Int!
+func ways(_ nums: inout [Character], _ dp: inout [Int], _ start: Int) -> Int {
+    if start >= n {
+        return 1
+    }
+    
+    if dp[start] == -1 {
+        var answer = 0
+        if let cur = map[nums[start]], cur != 0 {
+            answer += ways(&nums, &dp, start + 1)
+            
+            if start + 1 < n, let next = map[nums[start + 1]], cur * 10 + next <= 26 {
+                answer += ways(&nums, &dp, start + 2)
+            }
+        }
+        dp[start] = answer
+    }
+    
+    return dp[start]
+}
+
+func numDecodings(_ A: inout String) -> Int {
+    n = A.count
+    if n == 0 {
+        return 0
+    }
+    var dp = [Int](repeating: -1, count: n)
+    var nums = Array(A)
+    if let last = map[nums[n - 1]] {
+        if last != 0 {
+            dp[n - 1] = 1
+        } else {
+            if n - 2 >= 0, let prev = map[nums[n - 2]], prev != 0, prev <= 2 {
+                dp[n - 1] = 0
+                dp[n - 2] = 1
+            } else {
+                return 0
+            }
+        }
+    }
+    
+    return ways(&nums, &dp, 0)
+}
+
+
 
 //Suppose a sorted array A is rotated at some pivot unknown to you beforehand.
 //(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
