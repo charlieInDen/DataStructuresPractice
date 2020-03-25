@@ -1,5 +1,59 @@
 import UIKit
 
+//Suppose a sorted array A is rotated at some pivot unknown to you beforehand.
+//(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+//Find the minimum element.
+//The array will not contain duplicates.
+
+func findMinimumElementIndex(_ a: [Int], left: Int, right: Int) -> Int {
+    if a[left] < a[right] {
+        return left
+    }
+    let N = a.count
+    if left < right {
+        let mid = left + (right - left)/2
+        let prev = (mid - 1)%N
+        let next = (mid + 1)%N
+        
+        if a[mid] <= a[next] || a[prev] >= a[mid] {
+            return mid
+        }
+        if a[mid] > a[left] {
+            return findMinimumElementIndex(a, left: next, right: right)
+        }
+        return findMinimumElementIndex(a, left: left, right: prev)
+        
+    }
+    return -1
+}
+let arr = [4, 5, 6, 7, 0, 1, 2]
+findMinimumElementIndex(arr, left: 0, right: arr.count - 1)
+
+//Compute and return the square root of A.
+//If A is not a perfect square, return floor(sqrt(A)).
+//DO NOT USE SQRT FUNCTION FROM STANDARD LIBRARY
+func searchSquareRoot(_ left: Int,_ right: Int, n: Int, ans: inout Int) {
+    if left < right {
+        let mid = left + (right - left)/2
+        if mid * mid == n {
+            ans = mid
+        }
+        if mid * mid < n {
+            ans = mid
+            searchSquareRoot(mid + 1, right, n: n, ans: &ans)
+        }else {
+            searchSquareRoot(left, mid - 1, n: n, ans: &ans)
+        }
+    }
+}
+func findSquareRoot(_ n: Int) -> Int {
+    var answer = 0
+    searchSquareRoot(0, n/2, n: n, ans: &answer)
+    print(answer)
+    return answer
+}
+findSquareRoot(4)
+findSquareRoot(5)
 //Rearrange a given array so that Arr[i] becomes Arr[Arr[i]] with O(1) extra space.
 var a = [2,0,1]
 
@@ -13,6 +67,8 @@ func arrange(_ a: inout [Int]) {
     }
 }
 arrange(&a)
+
+
 
 //Max sum continuous subarray
 //1 <= N <= 1e6
